@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AGRI-BOT – Tableau de bord</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="header">
+    <a href="index.html" class="logo-area">
+      <img src="logo.png" alt="AGRI-BOT">
+      <h1>AGRI-BOT</h1>
+    </a>
+    <nav class="nav">
+      <a href="index.html" class="active">Tableau de bord</a>
+      <a href="controle.html">Contrôle & Caméra</a>
+      <a href="rapports.html">Rapports</a>
+    </nav>
+    <div class="header-right">
+      <span class="conn-pill" title="ws://192.168.4.1/ws"><span class="dot"></span><span class="conn-txt">Robot connecté</span></span>
+      <button class="btn-urgence" onclick="urgence()"><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2 21h20L12 3z"/><path d="M12 10v5M12 18h.01"/></svg> Arrêt d'urgence</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <h2 class="page-title">Tableau de bord</h2>
+
+    <div class="now-line">
+      <span class="now-ico"><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M10 8l6 4-6 4z" fill="currentColor"/></svg></span>
+      <div><small>En ce moment</small><strong><span data-live="rang">Rang 4</span>, <span data-live="etat">en marche</span></strong> · Parcelle A</div>
+    </div>
+
+    <!-- Alert -->
+    <div class="alert-box">
+      <svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2 21h20L12 3z"/><path d="M12 10v5M12 18h.01"/></svg>
+      <div>
+        <strong>Travail pas fini – Parcelle A</strong>
+        <span>6 rangs sur 8 terminés. 2 plantes malades détectées.</span>
+      </div>
+    </div>
+
+    <!-- Status cards -->
+    <div class="status-grid">
+      <div class="status-card">
+        <div class="card-title">Mode</div>
+        <div class="value green" data-live="mode">Automatique</div>
+      </div>
+      <div class="status-card">
+        <div class="card-title">Batterie <span data-live="batterie_v">11,8 V</span></div>
+        <div class="value amber" data-live="batterie_pct">60 %</div>
+        <div class="battery-bar">
+          <div class="battery-fill" data-live-bar="batterie" style="width: 60%"></div>
+        </div>
+      </div>
+      <div class="status-card">
+        <div class="card-title">Herbes arrachées</div>
+        <div class="value yellow" data-live="herbes">27</div>
+        <div style="font-size:0.8rem;color:var(--gris)">session en cours</div>
+      </div>
+      <div class="status-card">
+        <div class="card-title">Distance du jour</div>
+        <div class="value green" data-live="distance_km">1,2 km</div>
+        <div style="font-size:0.8rem;color:var(--gris)">depuis 8 h 15</div>
+      </div>
+    </div>
+
+    <!-- Quick actions – centrés et style bouton uniforme -->
+    <div class="quick-actions">
+      <button class="btn btn-primary" onclick="sendCmd('start','Démarrage',{mode:'auto'})"><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4l13 8-13 8z" fill="currentColor"/></svg> Démarrer</button>
+      <button class="btn btn-secondary" onclick="sendCmd('dock','Retour au dock')"><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/></svg> Retour au dock</button>
+      <button class="btn btn-danger" onclick="sendCmd('stop','Arrêt')"><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="1.5" fill="currentColor"/></svg> Arrêt</button>
+      <a href="controle.html" class="btn btn-outline"><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h4l2-3h6l2 3h4v11H3z"/><circle cx="12" cy="13" r="3.5"/></svg> Voir caméra</a>
+      <a href="rapports.html" class="btn btn-outline"><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h7"/></svg> Voir les rapports</a>
+    </div>
+
+    <!-- Mini last report -->
+    <div class="card">
+      <div class="card-title">Dernière activité</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-top:8px">
+        <div>
+          <strong>Parcelle A</strong> – 19 oct. 2026<br>
+          <span style="font-size:0.9rem;color:var(--gris)">1 h 40 · 1,2 km · Batterie restante 35 %</span>
+        </div>
+        <span class="badge badge-warn">Travail pas fini</span>
+        <a href="rapports.html" class="btn btn-primary btn-sm">Voir le rapport</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    AGRI-BOT · Supervision robot autonome · Palette « Aube ensoleillée »
+  </footer>
+
+  <script src="app.js"></script>
+  <script>
+  </script>
+</body>
+</html>
